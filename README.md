@@ -1,2 +1,2 @@
 # FreeSpace
-Project for practicing API - Front End - Tarmeez Academy
+Front End Project - Practicing API - Tarmeez Academy
