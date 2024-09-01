@@ -64,6 +64,7 @@
             </form>
           </div>
           <div class="modal-footer">
+            <span class="error-login text-danger w-100"></span>
             <button
               type="button"
               class="btn btn-secondary"
@@ -144,9 +145,16 @@
                   value=""
                 />
               </div>
+              <div class="mb-3">
+                <label for="formFile" class="Image-file"
+                  >Default file input example</label
+                >
+                <input class="form-control" type="file" id="image-file" />
+              </div>
             </form>
           </div>
           <div class="modal-footer">
+            <span class="error-register text-danger w-100"></span>
             <button
               type="button"
               class="btn btn-secondary"
@@ -180,28 +188,7 @@
     <div
       id="toast-div"
       class="toast-container position-fixed bottom-0 end-0 p-3"
-    >
-      <div
-        id="liveToast"
-        class="toast"
-        role="alert"
-        aria-live="assertive"
-        aria-atomic="true"
-      >
-        <div class="toast-header">
-          <img src="..." class="rounded me-2" alt="..." />
-          <strong class="me-auto">Bootstrap</strong>
-          <small>11 mins ago</small>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="toast"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div class="toast-body">Hello, world! This is a toast message.</div>
-      </div>
-    </div>
+    ></div>
     <!--// Toast //-->
     <!-- Nav Bar -->
     <div class="container fixed-top mb-5">
@@ -250,6 +237,7 @@
                     class="btn btn-outline-primary mx-2"
                     data-bs-toggle="modal"
                     data-bs-target="#loginModal"
+                    onclick="clearErrorMsg()"
                   >
                     Login
                   </button>
@@ -258,6 +246,7 @@
                     class="btn btn-outline-primary"
                     data-bs-toggle="modal"
                     data-bs-target="#registerModal"
+                    onclick="clearErrorMsg()"
                   >
                     Register
                   </button>
