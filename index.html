@@ -174,22 +174,132 @@
       </div>
     </div>
     <!-- //Register Modal// -->
-    <!-- // Modals// -->
 
+    <!-- Create Post Modal -->
+    <div
+      class="modal fade"
+      id="createPost"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="addPostModalLabel">Add Post</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="createPost-title" class="col-form-label"
+                  >Title</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="createPost-title"
+                  value=""
+                />
+              </div>
+              <div class="mb-3">
+                <label for="createPost-body" class="col-form-label">Body</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="createPost-body"
+                  value=""
+                />
+              </div>
+              <div class="mb-3">
+                <label for="createPost-image" class="col-form-label"
+                  >Image</label
+                >
+                <input
+                  type="file"
+                  class="form-control"
+                  id="createPost-image"
+                  value=""
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <span class="error-register text-danger w-100"></span>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="createPostFunction()"
+            >
+              Add Post
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- //Create Post Modal// -->
+    <!-- // Modals// -->
     <!-- Alert -->
     <!-- <div
       class="position-fixed bottom-0 end-0 fade show z-3"
       id="liveAlertPlaceholder"
     ></div> -->
-
     <!-- // Alert // -->
     <!-- Toast Alert -->
-
     <div
       id="toast-div"
       class="toast-container position-fixed bottom-0 end-0 p-3"
     ></div>
     <!--// Toast //-->
+    <!-- Add Post Button -->
+    <!-- Add Post Button -->
+    <div class="container fixed-bottom">
+      <div
+        id="new-post-div"
+        class="d-flex justify-content-center align-content-center"
+      >
+        <div
+          class="w-100 mb-5 d-flex justify-content-end align-items-center"
+          style="height: 50px"
+        >
+          <button
+            id="add-post-btn"
+            data-bs-toggle="modal"
+            data-bs-target="#createPost"
+            style="width: 50px; height: 50px; padding: 10px"
+            class="btn btn-primary bg-primary fs-6 rounded-circle d-flex justify-content-center text-white fw-bold mx-2 align-items-center shadow"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="38"
+              height="38"
+              fill="currentColor"
+              class="bi-plus-square-fill"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- // Add Post Button // -->
+    <!-- //Add Post Button // -->
+
     <!-- Nav Bar -->
     <div class="container fixed-top mb-5">
       <div class="d-flex justify-content-center">
@@ -341,37 +451,7 @@
         </div>
       </div>
     </div>
-    <!-- Add Post Button -->
-    <div class="container fixed-bottom">
-      <div
-        id="new-post-div"
-        class="d-flex justify-content-center align-content-center"
-      >
-        <div
-          class="w-100 mb-5 d-flex justify-content-end align-items-center"
-          style="height: 50px"
-        >
-          <button
-            style="width: 50px; height: 50px; padding: 10px"
-            class="btn btn-primary bg-primary fs-6 rounded-circle d-flex justify-content-center text-white fw-bold mx-2 align-items-center shadow"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="38"
-              height="38"
-              fill="currentColor"
-              class="bi-plus-square-fill"
-              viewBox="0 0 16 16"
-            >
-              <path
-                d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
-    <!-- // Add Post Button // -->
+
     <!-- // Posts // -->
 
     <!-- // Main Content -->

@@ -11,13 +11,14 @@ function init() {
       let posts = response.data.data;
       if (Array.isArray(posts)) {
         for (const post of posts) {
-          addPost(post);
+          getPost(post);
         }
       } else {
-        addPost(posts);
+        getPost(posts);
       }
     });
   setUserUI();
+  console.log("init done");
 }
 
 // Set Page UI based on user
@@ -45,7 +46,7 @@ function setUserUI() {
 }
 
 //adding Post Function
-function addPost(post) {
+function getPost(post) {
   //Get Posts Element
   let postsElement = document.querySelector(".posts");
 
@@ -258,4 +259,40 @@ function toastMsg(msg, type) {
 function clearErrorMsg() {
   document.querySelector(".error-login").textContent = "";
   document.querySelector(".error-register").textContent = "";
+}
+
+//Add Post
+function createPostFunction() {
+  const token = localStorage.getItem("token");
+  const createPostUrl = "https://tarmeezacademy.com/api/v1/posts";
+
+  let postTitle = document.getElementById("createPost-title").value;
+  let postBody = document.getElementById("createPost-body").value;
+  let postImage = document.getElementById("createPost-image").files[0];
+
+  // var myHeaders = new Headers();
+  // myHeaders.append("Accept", "application/json");
+
+  let formdata = new FormData();
+  formdata.append("title", postTitle);
+  formdata.append("body", postBody);
+  formdata.append("image", postImage);
+
+  axios
+    .post(createPostUrl, formdata, {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      console.log(response);
+      let modalElement = document.getElementById("createPost");
+      let modalInstance = bootstrap.Modal.getInstance(modalElement);
+      modalInstance.hide();
+      toastMsg("Post Has Been Added Successfully", "success");
+      init();
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }
