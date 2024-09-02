@@ -3,6 +3,8 @@ init();
 
 //Start Page
 function init() {
+    let postsElement = document.querySelector(".posts");
+  postsElement.innerHTML = "";
   // Make a request for a user with a given ID
   axios
     .get("https://tarmeezacademy.com/api/v1/posts")
