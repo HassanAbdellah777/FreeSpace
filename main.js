@@ -1,24 +1,29 @@
 //at first time page load
+let currentPage = 1;
+let lastPage;
 init();
 
 //Start Page
 function init() {
-    let postsElement = document.querySelector(".posts");
+  let postsElement = document.querySelector(".posts");
   postsElement.innerHTML = "";
+
   // Make a request for a user with a given ID
-  axios
-    .get("https://tarmeezacademy.com/api/v1/posts")
-    .then(function (response) {
-      // handle success
-      let posts = response.data.data;
-      if (Array.isArray(posts)) {
-        for (const post of posts) {
-          getPost(post);
-        }
-      } else {
-        getPost(posts);
-      }
-    });
+
+  // let baseUrl = "https://tarmeezacademy.com/api/v1/posts?page=1";
+  // // "https://tarmeezacademy.com/api/v1/posts"
+  // axios.get(urlReq).then(function (response) {
+  //   // handle success
+  //   let posts = response.data.data;
+  //   if (Array.isArray(posts)) {
+  //     for (const post of posts) {
+  //       getPost(post);
+  //     }
+  //   } else {
+  //     getPost(posts);
+  //   }
+  // });
+  getPost(currentPage);
   setUserUI();
   console.log("init done");
 }
@@ -48,69 +53,83 @@ function setUserUI() {
 }
 
 //adding Post Function
-function getPost(post) {
+async function getPost(page = 1) {
   //Get Posts Element
   let postsElement = document.querySelector(".posts");
+  //Request Posts
+  let urlReq = `https://tarmeezacademy.com/api/v1/posts?limit=5&page=${page}`;
+  // "https://tarmeezacademy.com/api/v1/posts"
+  // axios.get(urlReq).then(function (response) {
+  //   // handle success
 
-  let uName = post.author.name;
-  let imageProfile =
-    typeof post.author.profile_image === "string"
-      ? post.author.profile_image
-      : "./imgs/user-avatar.png";
-  let imageUrl = post.image;
-  let title = post.title ? post.title : "";
-  let body = post.body;
-  let time = post.created_at;
-  let commentsCount = post.comments_count;
-  let postTags = post.tags;
-  let tagDiv = document.createElement("div");
-  if (postTags.length !== 0) {
-    for (let tag of postTags) {
-      let tagBtn = document.createElement("button");
-      tagBtn.textContent = tag.arabic_name;
-      tagBtn.classList.add("btn-secondary", "btn", "btn-sm");
+  // Axios returns a promise, so we can await it
+  let response = await axios.get(urlReq);
+  let posts = response.data.data;
+  lastPage = response.data.meta.last_page; // used to handle pagination
+  {
+    for (const post of posts) {
+      let uName = post.author.name;
+      let imageProfile =
+        typeof post.author.profile_image === "string"
+          ? post.author.profile_image
+          : "./imgs/user-avatar.png";
 
-      tagDiv.appendChild(tagBtn);
+      let imageUrl = typeof post.image === "object" ? "" : post.image; // to stop error of posts with no image
+      let title = post.title ? post.title : "";
+      let body = post.body;
+      let time = post.created_at;
+      let commentsCount = post.comments_count;
+      let postTags = post.tags;
+      let tagDiv = document.createElement("div");
+      if (postTags.length !== 0) {
+        for (let tag of postTags) {
+          let tagBtn = document.createElement("button");
+          tagBtn.textContent = tag.arabic_name;
+          tagBtn.classList.add("btn-secondary", "btn", "btn-sm");
+
+          tagDiv.appendChild(tagBtn);
+        }
+      }
+      let card = document.createElement("div");
+      card.className = "card shadow rounded";
+      card.innerHTML = ` <div class="card-header">
+                      <img
+                        class="border border-3 rounded-circle"
+                        style="width: 40px; height: 40px"
+                        src="${imageProfile}"
+                        alt=""
+                      />
+                      <b>@${uName}</b>
+                    </div>
+                    <div class="card-body">
+                      <img style="width: 100%" src="${imageUrl}" alt="" />
+                      <span class="text-secondary d-block">${time}</span>
+                      <h5 class="card-title mt-2">${title}</h5>
+                      <p class="card-text">
+                        ${body}
+                      </p>
+                         <hr />
+                      <div >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          class="bi bi-pen"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"
+                          />
+                        </svg>
+                        <span class="mx-1">(${commentsCount})comments</span>
+                        <span class="d-inline-flex flex-wrap gap-2 justify-content-center">${tagDiv.innerHTML}</span>
+                        
+                      </div>
+                    </div>`;
+      postsElement.appendChild(card);
     }
   }
-  let card = document.createElement("div");
-  card.className = "card shadow rounded";
-  card.innerHTML = ` <div class="card-header">
-                <img
-                  class="border border-3 rounded-circle"
-                  style="width: 40px; height: 40px"
-                  src="${imageProfile}"
-                  alt=""
-                />
-                <b>@${uName}</b>
-              </div>
-              <div class="card-body">
-                <img style="width: 100%" src="${imageUrl}" alt="" />
-                <span class="text-secondary d-block">${time}</span>
-                <h5 class="card-title mt-2">${title}</h5>
-                <p class="card-text">
-                  ${body}
-                </p>
-                   <hr />
-                <div >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    class="bi bi-pen"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z"
-                    />
-                  </svg>
-                  <span class="mx-1">(${commentsCount})comments</span>
-                  <span class="d-inline-flex flex-wrap gap-2 justify-content-center">${tagDiv.innerHTML}</span>
-                  
-                </div>
-              </div>`;
-  postsElement.appendChild(card);
 }
 
 // login Function
@@ -298,3 +317,34 @@ function createPostFunction() {
       console.log(error);
     });
 }
+
+//PAgination listener
+// const handleInfiniteScroll = () => {};
+
+let isLoading = false;
+
+window.addEventListener("scroll", async function () {
+  const endOfPage =
+    window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000;
+
+  if (endOfPage && currentPage < lastPage && !isLoading) {
+    isLoading = true; // Set the flag to true to prevent further requests
+    // Use await to wait for the posts to load
+    await getPost(currentPage + 1); // Wait until the post request is completed
+    console.log(currentPage);
+    currentPage++;
+    isLoading = false; // Reset the flag after the request is completed
+    console.log(endOfPage);
+  }
+});
+
+// if (endOfPage && islastPageCheck) {
+//   getPost(currentPage + 1);
+//   currentPage++;
+//   console.log(currentPage);
+//   //addCards(currentPage + 1);
+//   // console.log(endOfPage);
+// }
+
+//pagination function
+// function paginationFunction() {}
