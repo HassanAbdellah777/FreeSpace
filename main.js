@@ -361,7 +361,7 @@ function postPage(postId) {
 
 function getPost() {
   console.log();
-  const queryString = window.location.href.search; // Returns:'?q=123'
+  const queryString = window.location.search; // Returns:'?q=123'
 
   // Further parsing:
   const params = new URLSearchParams(queryString);
