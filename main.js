@@ -6,7 +6,10 @@ init();
 //Start Page
 function init() {
   let postsElement = document.querySelector(".posts");
-  postsElement.innerHTML = "";
+  if (postsElement) {
+    postsElement.innerHTML = "";
+    getPosts(currentPage);
+  }
 
   // Make a request for a user with a given ID
 
@@ -17,13 +20,12 @@ function init() {
   //   let posts = response.data.data;
   //   if (Array.isArray(posts)) {
   //     for (const post of posts) {
-  //       getPost(post);
+  //       getPosts(post);
   //     }
   //   } else {
-  //     getPost(posts);
+  //     getPosts(posts);
   //   }
   // });
-  getPost(currentPage);
   setUserUI();
   console.log("init done");
 }
@@ -36,7 +38,9 @@ function setUserUI() {
   if (localStorage.getItem("token")) {
     loginDiv.style.setProperty("display", "none", "important");
     logoutDiv.style.setProperty("display", "flex", "important");
-    newPostDiv.style.setProperty("display", "flex", "important");
+    if (newPostDiv) {
+      newPostDiv.style.setProperty("display", "flex", "important");
+    }
     let loggedUser = JSON.parse(localStorage.getItem("user"));
     let imageProfile =
       typeof loggedUser.profile_image === "string"
@@ -47,13 +51,15 @@ function setUserUI() {
   } else {
     loginDiv.style.setProperty("display", "flex", "important");
     logoutDiv.style.setProperty("display", "none", "important");
-    newPostDiv.style.setProperty("display", "none", "important");
+    if (newPostDiv) {
+      newPostDiv.style.setProperty("display", "none", "important");
+    }
   }
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 //adding Post Function
-async function getPost(page = 1) {
+async function getPosts(page = 1) {
   //Get Posts Element
   let postsElement = document.querySelector(".posts");
   //Request Posts
@@ -73,7 +79,6 @@ async function getPost(page = 1) {
         typeof post.author.profile_image === "string"
           ? post.author.profile_image
           : "./imgs/user-avatar.png";
-
       let imageUrl = typeof post.image === "object" ? "" : post.image; // to stop error of posts with no image
       let title = post.title ? post.title : "";
       let body = post.body;
@@ -101,7 +106,7 @@ async function getPost(page = 1) {
                       />
                       <b>@${uName}</b>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body"  style="cursor: pointer" onclick="postPage(${post.id})">
                       <img style="width: 100%" src="${imageUrl}" alt="" />
                       <span class="text-secondary d-block">${time}</span>
                       <h5 class="card-title mt-2">${title}</h5>
@@ -330,7 +335,7 @@ window.addEventListener("scroll", async function () {
   if (endOfPage && currentPage < lastPage && !isLoading) {
     isLoading = true; // Set the flag to true to prevent further requests
     // Use await to wait for the posts to load
-    await getPost(currentPage + 1); // Wait until the post request is completed
+    await getPosts(currentPage + 1); // Wait until the post request is completed
     console.log(currentPage);
     currentPage++;
     isLoading = false; // Reset the flag after the request is completed
@@ -339,7 +344,7 @@ window.addEventListener("scroll", async function () {
 });
 
 // if (endOfPage && islastPageCheck) {
-//   getPost(currentPage + 1);
+//   getPosts(currentPage + 1);
 //   currentPage++;
 //   console.log(currentPage);
 //   //addCards(currentPage + 1);
@@ -348,3 +353,20 @@ window.addEventListener("scroll", async function () {
 
 //pagination function
 // function paginationFunction() {}
+
+function postPage(postId) {
+  window.location.assign(`postPage.html?postId=${postId}`);
+  // alert(postId);
+}
+
+function getPost() {
+  console.log();
+  const queryString = window.location.href.search; // Returns:'?q=123'
+
+  // Further parsing:
+  const params = new URLSearchParams(queryString);
+  const q = parseInt(params.get("postId")); // is the number 123
+  console.log(q);
+  //   window.location()
+}
+getPost();
