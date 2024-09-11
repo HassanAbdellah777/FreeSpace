@@ -367,6 +367,7 @@ function getPost() {
   const params = new URLSearchParams(queryString);
   const q = parseInt(params.get("postId")); // is the number 123
   console.log(q);
+alert (q);
   //   window.location()
 }
 getPost();
