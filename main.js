@@ -112,13 +112,9 @@ async function getPosts(page = 1) {
                         src="${imageProfile}"
                         alt=""
                       />
-                      <b style="cursor: pointer" onclick="userProfilePage(${
-                        (post.author.id, post.id)
-                      })">@${uName}</b>
+                      <b style="cursor: pointer" onclick="userProfilePage(${postAuthorId}, ${post.id})">@${uName}</b>
                     </div>
-                    <div class="card-body"  style="cursor: pointer" onclick="postPage(${
-                      post.id
-                    })">
+                    <div class="card-body"  style="cursor: pointer" onclick="postPage(${post.id})">
                     <div class="d-flex w-100 justify-content-center">
                     <img style="max-width: 100%; max-height: 80vh; object-fit: contain" src="${imageUrl}" alt="" />
                     </div>  
@@ -142,9 +138,7 @@ async function getPosts(page = 1) {
                           />
                         </svg>
                         <span class="mx-1">(${commentsCount})comments</span>
-                        <span class="d-inline-flex flex-wrap gap-2 justify-content-center">${
-                          tagDiv.innerHTML
-                        }</span>
+                        <span class="d-inline-flex flex-wrap gap-2 justify-content-center">${tagDiv.innerHTML}</span>
                         
                       </div>
                     </div>`;
