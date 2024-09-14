@@ -1,3 +1,4 @@
+// let postsElement = document.querySelector(".post-details");
 const queryString = window.location.search; // Returns:'?q=123'
 // Further parsing:
 const params = new URLSearchParams(queryString);
@@ -52,7 +53,7 @@ function getPost(postId) {
       <div class="p-2 my-1 rounded" style="background-color: #e6f7e6">
         <div><img class="border border-3 rounded-circle"
                           style="width: 40px; height: 40px"
-                          src="${imageProfile}"
+                          src="${commentAutohrImg}"
                           alt=""/> <span>${commentAuthor}</span>
                           
         </div>
@@ -108,6 +109,7 @@ function getPost(postId) {
 // add comment function
 function addComment() {
   const token = localStorage.getItem("token");
+  console.log(postId);
   const addCommentUrl = `https://tarmeezacademy.com/api/v1/posts/${postId}/comments`;
 
   let addCommentBody = document.getElementById("add-comment-body").value;
