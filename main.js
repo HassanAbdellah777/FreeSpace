@@ -35,11 +35,15 @@ function setUserUI() {
   let loginDiv = document.getElementById("login-register");
   let logoutDiv = document.getElementById("logout-div");
   let newPostDiv = document.getElementById("new-post-div");
+  let postPageComments = document.getElementById("post-page-comments");
   if (localStorage.getItem("token")) {
     loginDiv.style.setProperty("display", "none", "important");
     logoutDiv.style.setProperty("display", "flex", "important");
     if (newPostDiv) {
       newPostDiv.style.setProperty("display", "flex", "important");
+    }
+    if (postPageComments) {
+      postPageComments.style.setProperty("display", "block", "important");
     }
     let loggedUser = JSON.parse(localStorage.getItem("user"));
     let imageProfile =
@@ -53,6 +57,9 @@ function setUserUI() {
     logoutDiv.style.setProperty("display", "none", "important");
     if (newPostDiv) {
       newPostDiv.style.setProperty("display", "none", "important");
+    }
+    if (postPageComments) {
+      postPageComments.style.setProperty("display", "none", "important");
     }
   }
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -75,6 +82,7 @@ async function getPosts(page = 1) {
   {
     for (const post of posts) {
       let uName = post.author.name;
+      let postAuthorId = post.author.id; // post owner
       let imageProfile =
         typeof post.author.profile_image === "string"
           ? post.author.profile_image
@@ -104,11 +112,17 @@ async function getPosts(page = 1) {
                         src="${imageProfile}"
                         alt=""
                       />
-                      <b>@${uName}</b>
+                      <b style="cursor: pointer" onclick="userProfilePage(${
+                        (post.author.id, post.id)
+                      })">@${uName}</b>
                     </div>
-                    <div class="card-body"  style="cursor: pointer" onclick="postPage(${post.id})">
-                      <img style="width: 100%" src="${imageUrl}" alt="" />
-                      <span class="text-secondary d-block">${time}</span>
+                    <div class="card-body"  style="cursor: pointer" onclick="postPage(${
+                      post.id
+                    })">
+                    <div class="d-flex w-100 justify-content-center">
+                    <img style="max-width: 100%; max-height: 80vh; object-fit: contain" src="${imageUrl}" alt="" />
+                    </div>  
+                     <span class="text-secondary d-block">${time}</span>
                       <h5 class="card-title mt-2">${title}</h5>
                       <p class="card-text">
                         ${body}
@@ -128,7 +142,9 @@ async function getPosts(page = 1) {
                           />
                         </svg>
                         <span class="mx-1">(${commentsCount})comments</span>
-                        <span class="d-inline-flex flex-wrap gap-2 justify-content-center">${tagDiv.innerHTML}</span>
+                        <span class="d-inline-flex flex-wrap gap-2 justify-content-center">${
+                          tagDiv.innerHTML
+                        }</span>
                         
                       </div>
                     </div>`;
@@ -359,15 +375,11 @@ function postPage(postId) {
   // alert(postId);
 }
 
-function getPost() {
-  console.log();
-  const queryString = window.location.search; // Returns:'?q=123'
-
-  // Further parsing:
-  const params = new URLSearchParams(queryString);
-  const q = parseInt(params.get("postId")); // is the number 123
-  console.log(q);
-alert (q);
-  //   window.location()
+// function getPost() {
+//   console.log();
+//   //   window.location()
+// }
+// getPost();
+function userProfilePage(userId, postId) {
+  window.location.assign(`postPage.html?postId=${postId}&userId=${userId}`);
 }
-getPost();

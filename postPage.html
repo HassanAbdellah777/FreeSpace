@@ -365,15 +365,42 @@
 
     <!-- Main Content -->
 
-    <!-- Posts -->
-
+    <!-- Post -->
     <div class="container my-5">
       <div class="d-flex justify-content-center">
-        <div class="col-9"></div>
+        <div class="col-9">
+          <!-- post details will added by js -->
+          <div class="post-details"></div>
+          <!-- //post details will added by js // -->
+
+          <!-- post details page comments -->
+          <div
+            id="post-page-comments"
+            class="add-comment p-2 my-2 w-100 rounded shadow"
+            style="background-color: white"
+          >
+            <textarea
+              id="add-comment-body"
+              class="form-control"
+              style="resize: none"
+              placeholder="Leave a comment here"
+            ></textarea>
+            <div class="d-flex justify-content-end">
+              <button
+                class="btn btn-secondary mt-2"
+                id="add-comment-btn"
+                onclick="addComment()"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+          <!-- //post details page comments// -->
+        </div>
       </div>
     </div>
 
-    <!-- // Posts // -->
+    <!-- // Post // -->
 
     <!-- // Main Content -->
     <script
@@ -383,5 +410,6 @@
     ></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="main.js"></script>
+    <script src="postPage.js"></script>
   </body>
 </html>
