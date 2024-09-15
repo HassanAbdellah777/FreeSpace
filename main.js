@@ -4,7 +4,7 @@ let lastPage;
 init();
 
 //Start Page
-function init() {
+export function init() {
   let postsElement = document.querySelector(".posts");
   if (postsElement) {
     postsElement.innerHTML = "";
@@ -27,11 +27,11 @@ function init() {
   //   }
   // });
   setUserUI();
-  console.log("init done");
+  // console.log("init done");
 }
 
 // Set Page UI based on user
-function setUserUI() {
+export function setUserUI() {
   let loginDiv = document.getElementById("login-register");
   let logoutDiv = document.getElementById("logout-div");
   let newPostDiv = document.getElementById("new-post-div");
@@ -71,11 +71,16 @@ function setUserUI() {
 }
 
 //adding Post Function
-async function getPosts(page = 1) {
+export async function getPosts(
+  page = 1,
+  url = "https://tarmeezacademy.com/api/v1/posts?limit=5&page="
+) {
   //Get Posts Element
+
   let postsElement = document.querySelector(".posts");
   //Request Posts
-  let urlReq = `https://tarmeezacademy.com/api/v1/posts?limit=5&page=${page}`;
+  let urlReq = url;
+  console.log(urlReq);
   // "https://tarmeezacademy.com/api/v1/posts"
   // axios.get(urlReq).then(function (response) {
   //   // handle success
@@ -83,7 +88,14 @@ async function getPosts(page = 1) {
   // Axios returns a promise, so we can await it
   let response = await axios.get(urlReq);
   let posts = response.data.data;
-  lastPage = response.data.meta.last_page; // used to handle pagination
+
+  //this ondition when requesting user posts which not include las_page property
+  if (response.data.meta?.last_pag !== undefined) {
+    lastPage = response.data.meta.last_page; // used to handle pagination
+  } else {
+    lastPage = 0;
+  }
+
   {
     for (const post of posts) {
       let uName = post.author.name;
@@ -104,7 +116,6 @@ async function getPosts(page = 1) {
           let tagBtn = document.createElement("button");
           tagBtn.textContent = tag.arabic_name;
           tagBtn.classList.add("btn-secondary", "btn", "btn-sm");
-
           tagDiv.appendChild(tagBtn);
         }
       }
@@ -121,7 +132,7 @@ async function getPosts(page = 1) {
                     </div>
                     <div class="card-body"  style="cursor: pointer" onclick="postPage(${post.id})">
                     <div class="d-flex w-100 justify-content-center">
-                    <img style="max-width: 100%; max-height: 80vh; object-fit: contain" src="${imageUrl}" alt="" />
+                    <img style="max-width: 100%; max-height: 50vh; object-fit: contain" src="${imageUrl}" alt="" />
                     </div>  
                      <span class="text-secondary d-block">${time}</span>
                       <h5 class="card-title mt-2">${title}</h5>
@@ -153,7 +164,7 @@ async function getPosts(page = 1) {
 }
 
 // login Function
-function loginFunction() {
+export function loginFunction() {
   const userInput = document.getElementById("user-name").value;
   const pwdInput = document.getElementById("password").value;
   const loginUrl = "https://tarmeezacademy.com/api/v1/login";
@@ -162,10 +173,10 @@ function loginFunction() {
     .post(loginUrl, loginParams)
     .then((response) => {
       let token = response.data.token;
-      console.log(token);
+      // console.log(token);
       window.localStorage.setItem("token", token);
-      console.log(window.localStorage.getItem("token"));
-      console.log(response.data.user);
+      // console.log(window.localStorage.getItem("token"));
+      // console.log(response.data.user);
       window.localStorage.setItem("user", JSON.stringify(response.data.user));
       let modalElement = document.getElementById("loginModal");
       let modalInstance = bootstrap.Modal.getInstance(modalElement);
@@ -211,20 +222,20 @@ function loginFunction() {
       init();
     })
     .catch(function (error) {
-      console.log(error.response.data.message);
+      // console.log(error.response.data.message);
       let errorMsgElement = document.querySelector(".error-login");
-      console.log(errorMsgElement);
+      // console.log(errorMsgElement);
       errorMsgElement.textContent = error.response.data.message;
     });
 }
 // Register Function
-function registerFunction() {
+export function registerFunction() {
   const userInput = document.getElementById("register-user-name").value;
   const nameInput = document.getElementById("register-name").value;
   const pwdInput = document.getElementById("register-password").value;
   const emailInput = document.getElementById("email-user").value;
   const imageFile = document.getElementById("image-file").files[0];
-  console.log(imageFile);
+  // console.log(imageFile);
   const registerUrl = "https://tarmeezacademy.com/api/v1/register";
   // const registerParams = {
   //   username: userInput,
@@ -244,10 +255,10 @@ function registerFunction() {
     .post(registerUrl, form)
     .then((response) => {
       let token = response.data.token;
-      console.log(token);
+      // console.log(token);
       window.localStorage.setItem("token", token);
-      console.log(window.localStorage.getItem("token"));
-      console.log(response.data.user);
+      // console.log(window.localStorage.getItem("token"));
+      // console.log(response.data.user);
       window.localStorage.setItem("user", JSON.stringify(response.data.user));
       let modalElement = document.getElementById("registerModal");
       let modalInstance = bootstrap.Modal.getInstance(modalElement);
@@ -257,23 +268,23 @@ function registerFunction() {
       init();
     })
     .catch(function (error) {
-      console.log(error.response.data.message);
+      // console.log(error.response.data.message);
       let errorMsgElement = document.querySelector(".error-register");
-      console.log(errorMsgElement);
-      errorMsgElement.textContent = error.response.data.message;
+      // console.log(errorMsgElement);
+      // errorMsgElement.textContent = error.response.data.message;
     });
 }
 
 //Logout Function
-function logoutFunction() {
+export function logoutFunction() {
   window.localStorage.clear();
   toastMsg("Logged Out", "danger");
+  window.location.assign("index.html");
   // setUserUI();
-  init();
 }
 
 //Toast msg
-function toastMsg(msg, type) {
+export function toastMsg(msg, type) {
   const toastDiv = document.getElementById("toast-div");
   toastDiv.innerHTML = `<div
     id="liveToast"
@@ -297,13 +308,13 @@ function toastMsg(msg, type) {
   toastBootstrap.show();
 }
 //clear Error Msg in Modals
-function clearErrorMsg() {
+export function clearErrorMsg() {
   document.querySelector(".error-login").textContent = "";
   document.querySelector(".error-register").textContent = "";
 }
 
 //Add Post
-function createPostFunction() {
+export function createPostFunction() {
   const token = localStorage.getItem("token");
   const createPostUrl = "https://tarmeezacademy.com/api/v1/posts";
 
@@ -326,7 +337,7 @@ function createPostFunction() {
       },
     })
     .then((response) => {
-      console.log(response);
+      // console.log(response);
       let modalElement = document.getElementById("createPost");
       let modalInstance = bootstrap.Modal.getInstance(modalElement);
       modalInstance.hide();
@@ -334,7 +345,8 @@ function createPostFunction() {
       init();
     })
     .catch((error) => {
-      console.log(error);
+      // console.log(error);
+      toastMsg(error.response.data.message, "danger");
     });
 }
 
@@ -344,6 +356,7 @@ function createPostFunction() {
 let isLoading = false;
 
 window.addEventListener("scroll", async function () {
+  console.log("from scroll");
   const endOfPage =
     window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000;
 
@@ -351,10 +364,10 @@ window.addEventListener("scroll", async function () {
     isLoading = true; // Set the flag to true to prevent further requests
     // Use await to wait for the posts to load
     await getPosts(currentPage + 1); // Wait until the post request is completed
-    console.log(currentPage);
+    // console.log(currentPage);
     currentPage++;
     isLoading = false; // Reset the flag after the request is completed
-    console.log(endOfPage);
+    // console.log(endOfPage);
   }
 });
 
@@ -369,7 +382,7 @@ window.addEventListener("scroll", async function () {
 //pagination function
 // function paginationFunction() {}
 
-function postPage(postId) {
+export function postPage(postId) {
   window.location.assign(`postPage.html?postId=${postId}`);
   // alert(postId);
 }
@@ -379,10 +392,9 @@ function postPage(postId) {
 //   //   window.location()
 // }
 // getPost();
-function userProfilePage() {
+export function userProfilePage() {
   // get profile user id
-  console.log("profile clicked");
-
+  // console.log("profile clicked");
   if (localStorage.getItem("user")) {
     let userId = JSON.parse(localStorage.getItem("user")).id;
     // let urlReq = `https://tarmeezacademy.com/api/v1/users/${userId}`;
@@ -394,3 +406,12 @@ function userProfilePage() {
     window.location.assign(`profile.html?userId=${userId}`);
   }
 }
+
+window.postPage = postPage; // for using onclick in html we can avoid by using addevntlistener
+window.userProfilePage = userProfilePage; // for using onclick in html we can avoid by using addevntlistener
+window.loginFunction = loginFunction; // for using onclick in html we can avoid by using addevntlistener
+window.registerFunction = registerFunction; // for using onclick in html we can avoid by using addevntlistener
+window.userProfilePage = userProfilePage; // for using onclick in html we can avoid by using addevntlistener
+window.clearErrorMsg = clearErrorMsg; // for using onclick in html we can avoid by using addevntlistener
+window.logoutFunction = logoutFunction; // for using onclick in html we can avoid by using addevntlistener
+window.createPostFunction = createPostFunction; // for using onclick in html we can avoid by using addevntlistener

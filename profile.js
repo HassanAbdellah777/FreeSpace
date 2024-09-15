@@ -1,21 +1,23 @@
+import { getPosts } from "./main.js";
+
 // get user ID for profile page
 const queryStringUser = window.location.search; // Returns:'?q=123'
 // Further parsing:
 const paramsUser = new URLSearchParams(queryStringUser);
 const userIdSearch = parseInt(paramsUser.get("userId")); // is the number 123
 if (userIdSearch) {
-  console.log(userIdSearch);
+  // console.log(userIdSearch);
   let userPostsDiv = document.querySelector("user-posts");
   // getPosts(userId);
-  console.log("in profile");
+  // console.log("in profile");
   let urlReq = `https://tarmeezacademy.com/api/v1/users/${userIdSearch}`;
   axios.get(urlReq).then(function (response) {
     // handle success
     let userDetails = response.data.data;
-    console.log(userDetails);
+    // console.log(userDetails);
 
     let userProfileDiv = document.getElementById("user-profile");
-    console.log(userProfileDiv);
+    // console.log(userProfileDiv);
 
     let profileUserName = userDetails.username;
     let profileName = userDetails.name;
@@ -30,7 +32,7 @@ if (userIdSearch) {
     userProfileDiv.innerHTML = `
             <!-- user card -->
         <div class="card">
-              <div class="card-header">card header</div>
+              <div class="card-header">${profileName}'s Profil </div>
               <div class="card-body d-flex flex-column justify-content-center align-items-center">
                 <img
                   style="width: 80px; height: 80px"
@@ -46,20 +48,10 @@ if (userIdSearch) {
             </div>
             <!-- user card -->
 `;
-
-    // {
-    //     "data": {
-    //         "username": "amr.abulebbeh",
-    //         "name": "غدير حكم الصامل",
-    //         "email": "amr.shami@example.net",
-    //         "id": 1,
-    //         "profile_image": "https://tarmeezacademy.com/images/profile-pics/3.png",
-    //         "comments_count": 12,
-    //         "posts_count": 3
-    //     }
-    // }
   });
 }
+
+getPosts(1, `https://tarmeezacademy.com/api/v1/users/${userIdSearch}/posts`);
 
 // //adding Post Function
 // function getPost(userId) {

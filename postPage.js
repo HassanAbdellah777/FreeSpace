@@ -1,3 +1,6 @@
+// import functions
+import { toastMsg } from "./main.js";
+
 // let postsElement = document.querySelector(".post-details");
 const queryString = window.location.search; // Returns:'?q=123'
 // Further parsing:
@@ -7,49 +10,52 @@ const postId = parseInt(params.get("postId")); // is the number 123
 getPost(postId);
 
 //adding Post Function
-function getPost(postId) {
+export function getPost(postId) {
   //Get Posts Element
   let postsElement = document.querySelector(".post-details");
+  postsElement.innerHTML = "";
   //Request Posts
   let urlReq = `https://tarmeezacademy.com/api/v1/posts/${postId}`;
-  axios.get(urlReq).then(function (response) {
-    // handle success
-    let post = response.data.data;
-    let uName = post.author.name;
-    let postAuthorId = post.author.id; // post owner
-    let imageProfile =
-      typeof post.author.profile_image === "string"
-        ? post.author.profile_image
-        : "./imgs/user-avatar.png";
-    let imageUrl = typeof post.image === "object" ? "" : post.image; // to stop error of posts with no image
-    let title = post.title ? post.title : "";
-    let body = post.body;
-    let time = post.created_at;
-    let commentsCount = post.comments_count;
-    let postTags = post.tags;
-    let tagDiv = document.createElement("div");
-    if (postTags.length !== 0) {
-      for (let tag of postTags) {
-        let tagBtn = document.createElement("button");
-        tagBtn.textContent = tag.arabic_name;
-        tagBtn.classList.add("btn-secondary", "btn", "btn-sm");
-        tagDiv.appendChild(tagBtn);
-      }
-    }
-
-    //handle comments
-    let commentsDetails = "";
-    let comments = post.comments;
-    for (let comment of comments) {
-      let commentAuthor = comment.author.name;
-      let commentBody = comment.body;
-      let commentAutohrImg =
-        typeof comment.author.profile_image == "string"
-          ? comment.author.profile_image
+  axios
+    .get(urlReq)
+    .then(function (response) {
+      // handle success
+      let post = response.data.data;
+      let uName = post.author.name;
+      let postAuthorId = post.author.id; // post owner
+      let imageProfile =
+        typeof post.author.profile_image === "string"
+          ? post.author.profile_image
           : "./imgs/user-avatar.png";
+      let imageUrl = typeof post.image === "object" ? "" : post.image; // to stop error of posts with no image
+      let title = post.title ? post.title : "";
+      let body = post.body;
+      let time = post.created_at;
+      let commentsCount = post.comments_count;
+      let postTags = post.tags;
+      let tagDiv = document.createElement("div");
+      if (postTags.length !== 0) {
+        for (let tag of postTags) {
+          let tagBtn = document.createElement("button");
+          tagBtn.textContent = tag.arabic_name;
+          tagBtn.classList.add("btn-secondary", "btn", "btn-sm");
+          tagDiv.appendChild(tagBtn);
+        }
+      }
 
-      let commentDiv = document.createElement("div");
-      commentDiv.innerHTML = `
+      //handle comments
+      let commentsDetails = "";
+      let comments = post.comments;
+      for (let comment of comments) {
+        let commentAuthor = comment.author.name;
+        let commentBody = comment.body;
+        let commentAutohrImg =
+          typeof comment.author.profile_image == "string"
+            ? comment.author.profile_image
+            : "./imgs/user-avatar.png";
+
+        let commentDiv = document.createElement("div");
+        commentDiv.innerHTML = `
       <div class="p-2 my-1 rounded" style="background-color: #e6f7e6">
         <div><img class="border border-3 rounded-circle"
                           style="width: 40px; height: 40px"
@@ -60,12 +66,12 @@ function getPost(postId) {
       <div class="p-2" >${commentBody}</div>
       
       </div>`;
-      commentsDetails += commentDiv.innerHTML;
-    }
+        commentsDetails += commentDiv.innerHTML;
+      }
 
-    let card = document.createElement("div");
-    card.className = "card shadow rounded";
-    card.innerHTML = ` <div class="card-header">
+      let card = document.createElement("div");
+      card.className = "card shadow rounded";
+      card.innerHTML = ` <div class="card-header">
                         <img
                           class="border border-3 rounded-circle"
                           style="width: 40px; height: 40px"
@@ -76,7 +82,7 @@ function getPost(postId) {
                       </div>
                       <div class="card-body">
                         <div class="d-flex w-100 justify-content-center" >
-                    <img style="max-width: 100%; max-height: 80vh; object-fit: contain" src="${imageUrl}" alt="" />
+                    <img style="max-width: 100%; max-height: 60vh; object-fit: contain" src="${imageUrl}" alt="" />
                     </div>
                         <span class="text-secondary d-block">${time}</span>
                         <h5 class="card-title mt-2">${title}</h5>
@@ -102,21 +108,20 @@ function getPost(postId) {
                         </div>
                         <div>${commentsDetails}</div>
                       </div>`;
-    postsElement.appendChild(card);
-  });
+      postsElement.appendChild(card);
+    })
+    .catch((error) => {
+      // console.log(error.data);
+    });
 }
 
 // add comment function
-function addComment() {
+export function addComment() {
   const token = localStorage.getItem("token");
-  console.log(postId);
+  // console.log(postId);
   const addCommentUrl = `https://tarmeezacademy.com/api/v1/posts/${postId}/comments`;
 
   let addCommentBody = document.getElementById("add-comment-body").value;
-
-  // var myHeaders = new Headers();
-  // myHeaders.append("Accept", "application/json");
-
   const config = {
     headers: { Authorization: `Bearer ${token}` },
   };
@@ -126,21 +131,24 @@ function addComment() {
   axios
     .post(addCommentUrl, bodyParameters, config)
     .then((response) => {
-      window.location.reload();
+      document.getElementById("add-comment-body").value = "";
+      getPost(postId);
+      toastMsg("Comment Added Successfully", "success");
     })
     .catch((error) => {
-      console.log(error);
+      toastMsg(error.response.data.message, "danger");
     });
 }
 
 // get my id
 if (localStorage.getItem("user")) {
   let userId = JSON.parse(localStorage.getItem("user")).id;
-  console.log(userId);
+  // console.log(userId);
   let urlReq = `https://tarmeezacademy.com/api/v1/users/${userId}`;
   axios.get(urlReq).then(function (response) {
     // handle success
     // let post = response.data.data;
-    console.log(response);
+    // console.log(response);
   });
 }
+window.addComment = addComment; // for using onclick in html we can avoid by using addevntlistener
