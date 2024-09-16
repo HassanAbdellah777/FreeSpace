@@ -71,16 +71,11 @@ export function setUserUI() {
 }
 
 //adding Post Function
-export async function getPosts(
-  page = 1,
-  url = "https://tarmeezacademy.com/api/v1/posts?limit=5&page="
-) {
+export async function getPosts(page = 1) {
   //Get Posts Element
-
   let postsElement = document.querySelector(".posts");
   //Request Posts
-  let urlReq = url;
-  console.log(urlReq);
+  let urlReq = `https://tarmeezacademy.com/api/v1/posts?limit=5&page=${page}`;
   // "https://tarmeezacademy.com/api/v1/posts"
   // axios.get(urlReq).then(function (response) {
   //   // handle success
@@ -88,14 +83,7 @@ export async function getPosts(
   // Axios returns a promise, so we can await it
   let response = await axios.get(urlReq);
   let posts = response.data.data;
-
-  //this ondition when requesting user posts which not include las_page property
-  if (response.data.meta?.last_pag !== undefined) {
-    lastPage = response.data.meta.last_page; // used to handle pagination
-  } else {
-    lastPage = 0;
-  }
-
+  lastPage = response.data.meta.last_page; // used to handle pagination
   {
     for (const post of posts) {
       let uName = post.author.name;
@@ -128,7 +116,7 @@ export async function getPosts(
                         src="${imageProfile}"
                         alt=""
                       />
-                      <b style="cursor: pointer" onclick="userProfilePage(${postAuthorId}, ${post.id})">@${uName}</b>
+                      <b style="cursor: pointer" onclick="userProfilePageCard(${postAuthorId}, ${post.id})">@${uName}</b>
                     </div>
                     <div class="card-body"  style="cursor: pointer" onclick="postPage(${post.id})">
                     <div class="d-flex w-100 justify-content-center">
@@ -354,12 +342,10 @@ export function createPostFunction() {
 // const handleInfiniteScroll = () => {};
 
 let isLoading = false;
-
 window.addEventListener("scroll", async function () {
   console.log("from scroll");
   const endOfPage =
     window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000;
-
   if (endOfPage && currentPage < lastPage && !isLoading) {
     isLoading = true; // Set the flag to true to prevent further requests
     // Use await to wait for the posts to load
@@ -407,6 +393,9 @@ export function userProfilePage() {
   }
 }
 
+export function userProfilePageCard(userId, postId) {
+  window.location.assign(`profile.html?userId=${userId}`);
+}
 window.postPage = postPage; // for using onclick in html we can avoid by using addevntlistener
 window.userProfilePage = userProfilePage; // for using onclick in html we can avoid by using addevntlistener
 window.loginFunction = loginFunction; // for using onclick in html we can avoid by using addevntlistener
@@ -415,3 +404,4 @@ window.userProfilePage = userProfilePage; // for using onclick in html we can av
 window.clearErrorMsg = clearErrorMsg; // for using onclick in html we can avoid by using addevntlistener
 window.logoutFunction = logoutFunction; // for using onclick in html we can avoid by using addevntlistener
 window.createPostFunction = createPostFunction; // for using onclick in html we can avoid by using addevntlistener
+window.userProfilePageCard = userProfilePageCard;
